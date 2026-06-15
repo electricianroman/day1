@@ -366,14 +366,22 @@
   <div class="footer">с любовью сделано для Романа 🎈</div>
 </div>
 
-<script>
-  // ─────────────────────────────────────────────
-  // ⚙️ НАСТРОЙКИ — ВСТАВЬ СВОИ ДАННЫЕ СЮДА
-  const BOT_TOKEN = '8811455660:AAH8FnbOhckZZjOe9oOrqBJk_COwJ5PoVYw';   // например: 7512345678:AAHxxxx...
-  const CHAT_ID   = 677725190;       // например: 123456789
-  // ─────────────────────────────────────────────
+<!-- SUCCESS MODAL -->
+<div id="success-modal" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(15,10,30,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:linear-gradient(135deg,#1a1133,#1e163a);border:1px solid rgba(155,93,229,0.4);border-radius:28px;padding:48px 36px;text-align:center;max-width:360px;width:100%;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);">
+    <div style="font-size:64px;margin-bottom:16px;display:block;animation:bounceEmoji 1s ease-in-out infinite;">🎉</div>
+    <div style="font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;background:linear-gradient(135deg,#ff3cac,#9b5de5,#00f5d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;line-height:1.2;">Ждём тебя!</div>
+    <div style="color:#9988bb;font-size:15px;line-height:1.6;margin-bottom:28px;">Роман уже знает что ты придёшь 🥳<br>До встречи 20 июня!</div>
+    <button onclick="document.getElementById('success-modal').style.display='none'" style="background:linear-gradient(135deg,#fee440,#ff3cac);border:none;border-radius:14px;color:#0f0a1e;font-size:15px;font-weight:700;padding:14px 32px;cursor:pointer;font-family:'Inter',sans-serif;">Закрыть</button>
+  </div>
+</div>
 
- 
+<style>
+@keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes bounceEmoji { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+</style>
+
+<script>
   // ── Countdown ──
   function updateCountdown() {
     const target = new Date('2026-06-20T19:00:00');
@@ -404,7 +412,7 @@
     });
   }
 
-  // ── RSVP → Telegram ──
+  // ── RSVP → Formsubmit ──
   async function sendRSVP() {
     const name = document.getElementById('rsvp-name').value.trim();
     const comment = document.getElementById('rsvp-comment').value.trim();
@@ -419,36 +427,35 @@
       msg.className = 'form-msg error';
       return;
     }
-    if (String(BOT_TOKEN).includes('ВСТАВЬ') || String(CHAT_ID).includes('ВСТАВЬ')) {
-      msg.textContent = '⚙️ Telegram ещё не настроен.';
-      msg.className = 'form-msg error';
-      return;
-    }
 
     btn.disabled = true;
     btn.textContent = 'Отправляю...';
 
-    const text = `🎉 Новый гость на ДР Романа!\n\n👤 Имя: ${name}${comment ? `\n💬 Комментарий: ${comment}` : ''}`;
-
     try {
-      const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      const res = await fetch('https://formsubmit.co/ajax/sadilinrman1@yandex.ru', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          Имя: name,
+          Комментарий: comment || 'не указан',
+          _subject: '🎉 Новый гость на ДР Романа!',
+          _captcha: 'false'
+        })
       });
       const data = await res.json();
-      if (data.ok) {
-        msg.textContent = '🎊 Ура! Ждём тебя на вечеринке!';
-        msg.className = 'form-msg success';
+      if (data.success === 'true' || data.success === true) {
         document.getElementById('rsvp-name').value = '';
         document.getElementById('rsvp-comment').value = '';
         btn.textContent = '✅ Отправлено!';
+        const modal = document.getElementById('success-modal');
+        modal.style.display = 'flex';
+        modal.onclick = (e) => { if(e.target === modal) modal.style.display='none'; };
         launchBurst();
       } else {
-        throw new Error(data.description);
+        throw new Error('fail');
       }
     } catch(e) {
-      msg.textContent = '❌ Не удалось отправить. Проверь токен и chat ID.';
+      msg.textContent = '❌ Не удалось отправить. Попробуй ещё раз.';
       msg.className = 'form-msg error';
       btn.disabled = false;
       btn.textContent = '🎉 Я приду!';
