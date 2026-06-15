@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>День рождения Романа 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0a1e;
+    --card: #1a1133;
+    --card2: #1e163a;
+    --pink: #ff3cac;
+    --violet: #9b5de5;
+    --cyan: #00f5d4;
+    --yellow: #fee440;
+    --white: #f8f4ff;
+    --muted: #9988bb;
+    --radius: 20px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Confetti canvas ── */
+  #confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+  .page { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 40px 20px 60px; }
+
+  /* ── Hero ── */
+  .hero { text-align: center; padding: 20px 0 40px; }
+  .hero-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 16px;
+  }
+  .hero-name {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(52px, 14vw, 88px);
+    font-weight: 900;
+    line-height: 0.95;
+    background: linear-gradient(135deg, var(--pink) 0%, var(--violet) 50%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .hero-age {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(18px, 5vw, 28px);
+    font-weight: 700;
+    color: var(--yellow);
+    margin-bottom: 8px;
+  }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  /* ── Countdown ── */
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 28px 0 0;
+    flex-wrap: wrap;
+  }
+  .cd-block {
+    background: var(--card);
+    border: 1px solid rgba(155,93,229,0.3);
+    border-radius: 14px;
+    padding: 14px 18px 10px;
+    text-align: center;
+    min-width: 72px;
+  }
+  .cd-num {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--cyan);
+    line-height: 1;
+  }
+  .cd-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ── Cards ── */
+  .cards { display: flex; flex-direction: column; gap: 16px; margin-top: 36px; }
+  .card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius);
+    padding: 24px 24px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); border-color: rgba(155,93,229,0.4); }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .card.pink::before   { background: linear-gradient(90deg, var(--pink), var(--violet)); }
+  .card.cyan::before   { background: linear-gradient(90deg, var(--cyan), var(--violet)); }
+  .card.yellow::before { background: linear-gradient(90deg, var(--yellow), var(--pink)); }
+  .card.violet::before { background: linear-gradient(90deg, var(--violet), var(--cyan)); }
+
+  .card-icon { font-size: 28px; margin-bottom: 10px; }
+  .card-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .card-value {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .card-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* ── Copy button ── */
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    background: rgba(0,245,212,0.1);
+    border: 1px solid rgba(0,245,212,0.3);
+    border-radius: 10px;
+    color: var(--cyan);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    font-family: 'Inter', sans-serif;
+  }
+  .copy-btn:hover { background: rgba(0,245,212,0.2); }
+  .copy-btn:active { transform: scale(0.97); }
+  .copy-btn.copied { background: rgba(0,245,212,0.2); color: var(--cyan); }
+
+  /* ── Wishlist button ── */
+  .wish-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 14px;
+    background: linear-gradient(135deg, var(--pink), var(--violet));
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 24px;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%;
+    transition: opacity 0.2s, transform 0.1s;
+    font-family: 'Inter', sans-serif;
+  }
+  .wish-btn:hover { opacity: 0.9; }
+  .wish-btn:active { transform: scale(0.98); }
+
+  /* ── Form ── */
+  .form-card { background: var(--card2); }
+  .form-row { margin-top: 14px; }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .form-input, .form-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--white);
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s;
+    outline: none;
+    resize: none;
+  }
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--violet);
+  }
+  .form-textarea { min-height: 90px; }
+  .submit-btn {
+    width: 100%;
+    margin-top: 16px;
+    background: linear-gradient(135deg, var(--yellow) 0%, var(--pink) 100%);
+    border: none;
+    border-radius: 12px;
+    color: #0f0a1e;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .submit-btn:hover { opacity: 0.9; }
+  .submit-btn:active { transform: scale(0.98); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .form-msg {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+  }
+  .form-msg.success { background: rgba(0,245,212,0.15); color: var(--cyan); display: block; }
+  .form-msg.error   { background: rgba(255,60,172,0.15); color: var(--pink); display: block; }
+
+  /* ── Setup notice (hidden after config) ── */
+  .setup-notice {
+    background: rgba(254,228,64,0.1);
+    border: 1px solid rgba(254,228,64,0.35);
+    border-radius: 14px;
+    padding: 18px 20px;
+    font-size: 13px;
+    color: var(--yellow);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .setup-notice strong { font-weight: 700; }
+  .setup-notice code {
+    background: rgba(0,0,0,0.3);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-size: 12px;
+    font-family: monospace;
+  }
+  .setup-notice.hidden { display: none; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; margin-top: 48px; font-size: 13px; color: rgba(153,136,187,0.4); }
+
+  @media (max-width: 420px) {
+    .page { padding: 28px 16px 50px; }
+    .card { padding: 18px 18px 16px; }
+    .cd-num { font-size: 26px; }
+    .cd-block { min-width: 60px; padding: 12px 12px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">вечеринка уже близко ✨</div>
+    <div class="hero-name">Роман</div>
+    <div class="hero-age">исполняется 31 🎂</div>
+    <div class="hero-sub">20 июня 2026</div>
+
+    <div class="countdown" id="countdown">
+      <div class="cd-block"><div class="cd-num" id="cd-d">0</div><div class="cd-label">дней</div></div>
+      <div class="cd-block"><div class="cd-num" id="cd-h">0</div><div class="cd-label">часов</div></div>
+      <div class="cd-block"><div class="cd-num" id="cd-m">0</div><div class="cd-label">минут</div></div>
+      <div class="cd-block"><div class="cd-num" id="cd-s">0</div><div class="cd-label">секунд</div></div>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="cards">
+
+    <!-- Date & time -->
+    <div class="card pink">
+      <div class="card-icon">📅</div>
+      <div class="card-title">Дата и время</div>
+      <div class="card-value">20 июня 2026</div>
+      <div class="card-sub">Начало вечеринки с 19:00 — не опаздывай!</div>
+    </div>
+
+    <!-- Address -->
+    <div class="card cyan">
+      <div class="card-icon">📍</div>
+      <div class="card-title">Место проведения</div>
+      <div class="card-value">ул. Фестивальная, д. 22, к. 4</div>
+      <div class="card-sub">Квартира 32 · 8 этаж · Домофон: 32</div>
+      <button class="copy-btn" onclick="copyAddress(this)">
+        <span>📋</span> Скопировать адрес
+      </button>
+    </div>
+
+    <!-- Dress code -->
+    <div class="card yellow">
+      <div class="card-icon">👕</div>
+      <div class="card-title">Дресс-код</div>
+      <div class="card-value">Свободный стиль</div>
+      <div class="card-sub">Приходи в чём тебе удобно — главное приходи!</div>
+    </div>
+
+    <!-- Wishlist -->
+    <div class="card violet">
+      <div class="card-icon">🎁</div>
+      <div class="card-title">Подарки</div>
+      <div class="card-value">Вишлист Романа</div>
+      <div class="card-sub">Не знаешь что подарить? Здесь есть идеи 👇</div>
+      <a class="wish-btn" href="https://followish.io/mywishlist/xknn1aely0qunm" target="_blank" rel="noopener">
+        🎀 Открыть вишлист
+      </a>
+    </div>
+
+    <!-- RSVP Form -->
+    <div class="card violet form-card">
+      <div class="card-icon">💌</div>
+      <div class="card-title">Подтвердить участие</div>
+      <div class="card-value" style="font-size:16px;margin-bottom:4px;">Дай знать, что придёшь!</div>
+
+     
+
+      <div class="form-row">
+        <label class="form-label" for="rsvp-name">Твоё имя *</label>
+        <input class="form-input" id="rsvp-name" type="text" placeholder="Как тебя зовут?" maxlength="80" autocomplete="off">
+      </div>
+      <div class="form-row">
+        <label class="form-label" for="rsvp-comment">Комментарий <span style="font-weight:400;font-size:11px;">(необязательно)</span></label>
+        <textarea class="form-textarea" id="rsvp-comment" placeholder="Приду с подругой, у меня аллергия на что-то... или просто привет 😊" maxlength="300"></textarea>
+      </div>
+      <button class="submit-btn" id="submit-btn" onclick="sendRSVP()">🎉 Я приду!</button>
+      <div class="form-msg" id="form-msg"></div>
+    </div>
+
+  </div>
+
+  <div class="footer">с любовью сделано для Романа 🎈</div>
+</div>
+
+<script>
+  // ─────────────────────────────────────────────
+  // ⚙️ НАСТРОЙКИ — ВСТАВЬ СВОИ ДАННЫЕ СЮДА
+  const BOT_TOKEN = 8811455660:AAH8FnbOhckZZjOe9oOrqBJk_COwJ5PoVYw;   // например: 7512345678:AAHxxxx...
+  const CHAT_ID   = 677725190      // например: 123456789
+  // ─────────────────────────────────────────────
+
+  // Скрыть инструкцию если токен уже вставлен
+  if (!BOT_TOKEN.includes('ВСТАВЬ')) {
+    document.getElementById('setup-notice').classList.add('hidden');
+  }
+
+  // ── Countdown ──
+  function updateCountdown() {
+    const target = new Date('2026-06-20T19:00:00');
+    const now = new Date();
+    let diff = Math.max(0, target - now);
+    const d = Math.floor(diff / 86400000); diff -= d * 86400000;
+    const h = Math.floor(diff / 3600000);  diff -= h * 3600000;
+    const m = Math.floor(diff / 60000);    diff -= m * 60000;
+    const s = Math.floor(diff / 1000);
+    document.getElementById('cd-d').textContent = d;
+    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ── Copy address ──
+  function copyAddress(btn) {
+    const text = 'ул. Фестивальная, д. 22, к. 4, кв. 32, 8 этаж, домофон 32';
+    navigator.clipboard.writeText(text).then(() => {
+      btn.innerHTML = '<span>✅</span> Скопировано!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = '<span>📋</span> Скопировать адрес';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  // ── RSVP → Telegram ──
+  async function sendRSVP() {
+    const name = document.getElementById('rsvp-name').value.trim();
+    const comment = document.getElementById('rsvp-comment').value.trim();
+    const msg = document.getElementById('form-msg');
+    const btn = document.getElementById('submit-btn');
+
+    msg.className = 'form-msg';
+    msg.style.display = 'none';
+
+    if (!name) {
+      msg.textContent = '⚠️ Пожалуйста, укажи своё имя';
+      msg.className = 'form-msg error';
+      return;
+    }
+    if (BOT_TOKEN.includes('ВСТАВЬ') || CHAT_ID.includes('ВСТАВЬ')) {
+      msg.textContent = '⚙️ Telegram ещё не настроен. Следуй инструкции выше.';
+      msg.className = 'form-msg error';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Отправляю...';
+
+    const text = `🎉 Новый гость на ДР Романа!\n\n👤 Имя: ${name}${comment ? `\n💬 Комментарий: ${comment}` : ''}`;
+
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'HTML' })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        msg.textContent = '🎊 Ура! Ждём тебя на вечеринке!';
+        msg.className = 'form-msg success';
+        document.getElementById('rsvp-name').value = '';
+        document.getElementById('rsvp-comment').value = '';
+        btn.textContent = '✅ Отправлено!';
+        launchBurst();
+      } else {
+        throw new Error(data.description);
+      }
+    } catch(e) {
+      msg.textContent = '❌ Не удалось отправить. Проверь токен и chat ID.';
+      msg.className = 'form-msg error';
+      btn.disabled = false;
+      btn.textContent = '🎉 Я приду!';
+    }
+  }
+
+  // ── Confetti ──
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  const COLORS = ['#ff3cac','#9b5de5','#00f5d4','#fee440','#ff9f1c','#ffffff'];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor(x, y, burst) {
+      this.x = x ?? Math.random() * W;
+      this.y = y ?? -10;
+      this.size = burst ? Math.random() * 8 + 4 : Math.random() * 6 + 3;
+      this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      this.vx = burst ? (Math.random() - 0.5) * 14 : (Math.random() - 0.5) * 2;
+      this.vy = burst ? (Math.random() - 1.5) * 12 : Math.random() * 2 + 0.5;
+      this.angle = Math.random() * 360;
+      this.spin = (Math.random() - 0.5) * 6;
+      this.gravity = burst ? 0.4 : 0.05;
+      this.alpha = 1;
+      this.shape = Math.random() > 0.5 ? 'rect' : 'circle';
+    }
+    update() {
+      this.vy += this.gravity;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.angle += this.spin;
+      if (this.y > H + 20) this.alpha = 0;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.angle * Math.PI / 180);
+      if (this.shape === 'rect') {
+        ctx.fillRect(-this.size/2, -this.size/4, this.size, this.size/2);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size/2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+  }
+
+  // Ambient rain
+  function spawnAmbient() {
+    if (particles.length < 60) particles.push(new Particle());
+    setTimeout(spawnAmbient, 200);
+  }
+  spawnAmbient();
+
+  // Burst on RSVP success
+  function launchBurst() {
+    for (let i = 0; i < 80; i++) {
+      particles.push(new Particle(W/2, H*0.6, true));
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles = particles.filter(p => p.alpha > 0);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+</script>
+</body>
+</html>
