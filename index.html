@@ -347,7 +347,7 @@
       <div class="card-title">Подтвердить участие</div>
       <div class="card-value" style="font-size:16px;margin-bottom:4px;">Дай знать, что придёшь!</div>
 
-     
+      
 
       <div class="form-row">
         <label class="form-label" for="rsvp-name">Твоё имя *</label>
@@ -370,14 +370,10 @@
   // ─────────────────────────────────────────────
   // ⚙️ НАСТРОЙКИ — ВСТАВЬ СВОИ ДАННЫЕ СЮДА
   const BOT_TOKEN = '8811455660:AAH8FnbOhckZZjOe9oOrqBJk_COwJ5PoVYw';   // например: 7512345678:AAHxxxx...
-  const CHAT_ID   = 677725190      // например: 123456789
+  const CHAT_ID   = 677725190;       // например: 123456789
   // ─────────────────────────────────────────────
 
-  // Скрыть инструкцию если токен уже вставлен
-  if (!BOT_TOKEN.includes('ВСТАВЬ')) {
-    document.getElementById('setup-notice').classList.add('hidden');
-  }
-
+ 
   // ── Countdown ──
   function updateCountdown() {
     const target = new Date('2026-06-20T19:00:00');
@@ -423,8 +419,8 @@
       msg.className = 'form-msg error';
       return;
     }
-    if (BOT_TOKEN.includes('ВСТАВЬ') || CHAT_ID.includes('ВСТАВЬ')) {
-      msg.textContent = '⚙️ Telegram ещё не настроен. Следуй инструкции выше.';
+    if (String(BOT_TOKEN).includes('ВСТАВЬ') || String(CHAT_ID).includes('ВСТАВЬ')) {
+      msg.textContent = '⚙️ Telegram ещё не настроен.';
       msg.className = 'form-msg error';
       return;
     }
