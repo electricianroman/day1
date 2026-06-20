@@ -35,7 +35,7 @@
   .page { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 40px 20px 60px; }
 
   /* ── Hero ── */
-  .hero { text-align: center; padding: 20px 0 40px; }
+  .hero { text-align: center; padding: 20px 0 40px; position: relative; }
   .hero-eyebrow {
     font-family: 'Inter', sans-serif;
     font-size: 13px;
@@ -66,6 +66,20 @@
   .hero-sub {
     color: var(--muted);
     font-size: 15px;
+  }
+
+  /* ── Floating decor emojis ── */
+  .floaty {
+    position: absolute;
+    font-size: 22px;
+    opacity: 0.5;
+    animation: floaty 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-14px) rotate(8deg); }
   }
 
   /* ── Countdown ── */
@@ -122,7 +136,8 @@
   .card.yellow::before { background: linear-gradient(90deg, var(--yellow), var(--pink)); }
   .card.violet::before { background: linear-gradient(90deg, var(--violet), var(--cyan)); }
 
-  .card-icon { font-size: 28px; margin-bottom: 10px; }
+  .card-icon { font-size: 28px; margin-bottom: 10px; display: inline-block; transition: transform 0.3s; }
+  .card:hover .card-icon { transform: scale(1.15) rotate(-6deg); }
   .card-title {
     font-size: 11px;
     text-transform: uppercase;
@@ -287,6 +302,10 @@
 
   <!-- HERO -->
   <div class="hero">
+    <span class="floaty" style="top:-10px;left:8%;animation-delay:0s;">🎈</span>
+    <span class="floaty" style="top:10px;right:6%;animation-delay:1.2s;">✨</span>
+    <span class="floaty" style="top:60%;left:2%;animation-delay:2s;font-size:18px;">🎊</span>
+    <span class="floaty" style="top:55%;right:4%;animation-delay:0.6s;font-size:18px;">🥳</span>
     <div class="hero-eyebrow">вечеринка уже близко ✨</div>
     <div class="hero-name">Роман</div>
     <div class="hero-age">исполняется 31 🎂</div>
@@ -346,8 +365,6 @@
       <div class="card-icon">💌</div>
       <div class="card-title">Подтвердить участие</div>
       <div class="card-value" style="font-size:16px;margin-bottom:4px;">Дай знать, что придёшь!</div>
-
-      
 
       <div class="form-row">
         <label class="form-label" for="rsvp-name">Твоё имя *</label>
@@ -432,7 +449,7 @@
     btn.textContent = 'Отправляю...';
 
     try {
-      const res = await fetch('https://formsubmit.co/ajax/sadilinrman1@yandex.ru', {
+      const res = await fetch('https://formsubmit.co/ajax/ef0795be473248a7a4a9168ad8b258a2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
